@@ -1,0 +1,195 @@
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>КАТАЛОГ АВТОМОБИЛЕЙ</title>
+<style>
+  body {
+    font-family:Whide Latin;
+    margin: 0; padding: 0;
+    position: relative;
+  }
+
+  /* Фоновое изображение */
+  body::before {
+    content: "";
+    background: url('https://img.freepik.com/free-photo/modern-futuristic-sci-fi-background_35913-2152.jpg?semt=ais_hybrid&w=740') no-repeat center center fixed;
+    background-size: cover;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -2;
+  }
+
+  /* Затемнение */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+
+  h1 {
+    text-align: center; color: #ffd05b; margin: 30px 0;
+    text-shadow: 1px 1px 5px black;
+  }
+
+  .container {
+    max-width: 1200px; margin: 0 auto; display: flex; gap: 20px;
+    padding: 20px;
+  }
+
+  aside.sidebar {
+    width: 300px; background: #004080cc; color: #e0e7ff; padding: 20px; border-radius: 15px;
+  }
+
+  main.content {
+    flex-grow: 1; background: #ffffffdd; padding: 20px; border-radius: 15px;
+  }
+
+  label {
+    display: block; margin: 12px 0; cursor: pointer;
+  }
+
+  input[type="text"], select {
+    width: 100%; padding: 6px; margin-top: 4px; border-radius: 8px; border: none;
+  }
+
+  input[type="checkbox"], input[type="radio"] {
+    margin-right: 8px;
+  }
+
+  button.reset-btn {
+    background: #ffd05b; border: none; padding: 10px; border-radius: 12px;
+    font-weight: 700; color: #004080; cursor: pointer; width: 100%;
+    margin-top: 20px;
+  }
+
+  .car-grid {
+    display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 25px;
+  }
+
+  .car-card {
+    background: #e6f0ffcc; border-radius: 15px; padding: 15px;
+    box-shadow: 0 5px 15px rgba(0,64,128,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  .car-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0,64,128,0.3);
+  }
+
+  .car-img {
+    width: 100%; height: 150px; object-fit: cover; border-radius: 12px;
+    background: #ccc;
+    margin-bottom: 12px;
+  }
+
+  .car-title {
+    font-weight: 700; font-size: 1.2rem; margin-bottom: 8px;
+  }
+
+  .car-price {
+    color: #ff9800; font-weight: 900; font-size: 1.3rem;
+    letter-spacing: 1px;
+  }
+
+  .pagination {
+    margin-top: 30px; text-align: center;
+  }
+
+  .pagination a {
+    color: #ffd05b; margin: 0 8px; text-decoration: none; font-weight: 700;
+  }
+
+  .pagination span.current {
+    margin: 0 8px; font-weight: 900; color: #ffd05b;
+  }
+</style>
+</head>
+<body>
+<h1>КАТАЛОГ АВТОМОБИЛЕЙ</h1>
+<div class="container">
+  <aside class="sidebar">
+    <form method="get" id="filterForm">
+      <label>
+        Поиск по модели
+        <input type="text" name="search" value="{{ search_query }}" placeholder="Введите модель" />
+      </label>
+
+      <label>
+        Марка:
+        <select name="brand" onchange="this.form.submit()">
+            <option value="">Все марки</option>
+            {% for brand in brands %}
+              <option value="{{ brand.id }}" {% if selected_brand == brand.id|stringformat:"s" %}selected{% endif %}>{{ brand.name }}</option>
+            {% endfor %}
+          </select>
+      </label>
+
+      <fieldset>
+        <legend>Тип автомобиля</legend>
+        <label><input type="checkbox" name="type" value="Легковой" {% if "Легковой" in selected_types %}checked{% endif %}> Легковой</label>
+        <label><input type="checkbox" name="type" value="Внедорожник" {% if "Внедорожник" in selected_types %}checked{% endif %}> Внедорожник</label>
+        <label><input type="checkbox" name="type" value="Электромобиль" {% if "Электромобиль" in selected_types %}checked{% endif %}> Электромобиль</label>
+        <label><input type="checkbox" name="type" value="JDM" {% if "JDM " in selected_types %}checked{% endif %}> JDM</label>
+      </fieldset>
+
+      <fieldset>
+        <label><input type="radio" name="price" value="0-3000000" {% if selected_price == "0-3000000" %}checked{% endif %}> До 3 000 000</label>
+        <label><input type="radio" name="price" value="3000000-10000000" {% if selected_price == "3000000-10000000" %}checked{% endif %}> 3 000 000 – 10 000 000</label>
+        <label><input type="radio" name="price" value="10000000-9999999999" {% if selected_price == "10000000-9999999999" %}checked{% endif %}> Более 10 000 000</label>
+        <label><input type="radio" name="price" value="all" {% if selected_price == "all" %}checked{% endif %}> Все цены</label>
+      </fieldset>
+
+      <button type="submit" class="reset-btn">Применить фильтры</button>
+      <button type="button" onclick="window.location='?';" class="reset-btn" style="margin-top:10px; background:#004080; color:#ffd05b;">
+        Сбросить фильтры
+      </button>
+    </form>
+  </aside>
+
+  <main class="content">
+    <div class="car-grid">
+      {% for car in cars %}
+        <div class="car-card">
+          <img class="car-img" src="{{ car.image_url|default:'https://via.placeholder.com/300x150?text=No+Image' }}" alt="{{ car.model.brand.name }} {{ car.model.name }}" />
+          <div class="car-title">{{ car.model.brand.name }} {{ car.model.name }} ({{ car.year }})</div>
+          <div class="car-price">{{ car.price|intcomma }} сом</div>
+          <div>Тип: {{ car.car_type }}</div>
+        </div>
+      {% empty %}
+        <p>Автомобили не найдены.</p>
+      {% endfor %}
+    </div>
+
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_brand %}brand={{ selected_brand }}&{% endif %}
+          {% for t in selected_types %}type={{ t }}&{% endfor %}
+          price={{ selected_price }}&page={{ page_obj.previous_page_number }}">← Назад</a>
+      {% endif %}
+
+      <span class="current">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+      {% if page_obj.has_next %}
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_brand %}brand={{ selected_brand }}&{% endif %}
+          {% for t in selected_types %}type={{ t }}&{% endfor %}
+          price={{ selected_price }}&page={{ page_obj.next_page_number }}">Вперед →</a>
+      {% endif %}
+    </div>
+  </main>
+</div>
+
+<script>
+  document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => {
+    el.addEventListener('change', () => {
+      document.getElementById('filterForm').submit();
+    });
+  });
+</script>
