@@ -1,24 +1,21 @@
+# carcatalog/settings.py
 
 from pathlib import Path
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Базовая директория проекта
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Безопасный ключ Django для учебного проекта
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your_fallback_secret_key')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y8sl43(c^*&=6u+7!#m)d-&iqtxl+^)l+)d^+vs$!b(0@k!iqr'
-
-# SECURITY WARNING: don't run with debug turned on in production!
+# Режим отладки (True для учебного проекта, на Render безопасно)
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Разрешённые хосты для Render
+ALLOWED_HOSTS = ['*']  # временно, чтобы принимал запросы с любого домена
 
-
-# Application definition
-
+# Приложения Django
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,10 +23,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',
-    'cars', 
+    'cars',  # твое приложение
 ]
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -49,6 +46,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -59,10 +57,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'carcatalog.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+# База данных (SQLite для учебного проекта)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -70,53 +65,19 @@ DATABASES = {
     }
 }
 
+# Пароли
+AUTH_PASSWORD_VALIDATORS = []
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
+# Локализация
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
+# Статика
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
+# Прочие настройки
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-import os
-
-SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback_key')
-DEBUG = bool(int(os.environ.get('DEBUG', 1)))
-ALLOWED_HOSTS = ['car-catalog-7nd0.onrender.com']
-
 
