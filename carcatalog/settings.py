@@ -24,9 +24,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize'
-    'cars',  # твое приложение
+    'django.contrib.humanize',  # <- добавлено
+    'cars',
 ]
+
 
 # Middleware
 MIDDLEWARE = [
