@@ -9,12 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Безопасный ключ Django для учебного проекта
 SECRET_KEY = os.environ.get('SECRET_KEY', 'your_fallback_secret_key')
 
-# Режим отладки (True для учебного проекта, на Render безопасно)
+# Режим отладки (True для учебного проекта)
 DEBUG = True
 
 # Разрешённые хосты для Render
-ALLOWED_HOSTS = ['car-catalog-7nd0.onrender.com']
-  # временно, чтобы принимал запросы с любого домена
+ALLOWED_HOSTS = ['car-catalog-7nd0.onrender.com', 'localhost', '127.0.0.1']
 
 # Приложения Django
 INSTALLED_APPS = [
@@ -24,10 +23,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',  # <- добавлено
-    'cars',
+    'django.contrib.humanize',  # <- обязательно для {% load humanize %}
+    'cars',  # твое приложение
 ]
-
 
 # Middleware
 MIDDLEWARE = [
@@ -45,7 +43,7 @@ ROOT_URLCONF = 'carcatalog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [],  # здесь можно добавить общие шаблоны
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,4 +81,3 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Прочие настройки
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
