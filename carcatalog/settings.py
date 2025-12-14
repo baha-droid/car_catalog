@@ -13,7 +13,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your_fallback_secret_key')
 DEBUG = True
 
 # Разрешённые хосты для Render
-ALLOWED_HOSTS = ['*']  # временно, чтобы принимал запросы с любого домена
+ALLOWED_HOSTS = ['car-catalog-7nd0.onrender.com']
+  # временно, чтобы принимал запросы с любого домена
 
 # Приложения Django
 INSTALLED_APPS = [
